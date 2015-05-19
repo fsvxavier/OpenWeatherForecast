@@ -1,6 +1,12 @@
 # Weather forecast
 
-[![Coverage Status](https://coveralls.io/repos/enanablancaynumeros/weather_forecast/badge.svg)](https://coveralls.io/r/enanablancaynumeros/weather_forecast)
+[![Build Status](https://travis-ci.org/enanablancaynumeros/OpenWeatherForecast.svg?branch=master)](https://travis-ci.org/enanablancaynumeros/OpenWeatherForecast)
+[![Coverage Status](https://coveralls.io/repos/enanablancaynumeros/weather_forecast/badge.svg)](https://coveralls.io/r/enanablancaynumeros/OpenWeatherForecast)
+[![Latest Version](https://pypip.in/version/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
+[![Supported Python versions](https://pypip.in/py_versions/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
+[![Supported Python implementations](https://pypip.in/implementation/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
+[![Development Status](https://pypip.in/status/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
+[![Wheel Status](https://pypip.in/wheel/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
 
 Openweather python wrapper to forecast weather data.
 
