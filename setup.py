@@ -9,7 +9,7 @@ with open(path.join(current_directory, 'DESCRIPTION.rst'), encoding='utf-8') as 
     long_description = f.read()
 
 setup(
-    name='WeatherForecast',
+    name='OpenWeatherForecast',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -32,7 +32,7 @@ setup(
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
-        'Topic :: Office/Business :: Financial :: Trading',
+        'Topic :: Office/Business :: Financial',
 
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: MIT License',

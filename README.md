@@ -1,5 +1,7 @@
 # Weather forecast
 
+[![Coverage Status](https://coveralls.io/repos/enanablancaynumeros/weather_forecast/badge.svg)](https://coveralls.io/r/enanablancaynumeros/weather_forecast)
+
 Openweather python wrapper to forecast weather data.
 
 OpenWeatherForecast is released under the [MIT license](https://github.com/enanablancaynumeros/weather_forecast/blob/master/LICENSE.txt). The source code is on [GitHub](https://github.com/enanablancaynumeros) and [issues are also tracked on GitHub](https://github.com/enanablancaynumeros/weather_forecast/issues).

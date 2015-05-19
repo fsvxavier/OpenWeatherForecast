@@ -1,4 +1,4 @@
 .idea*
-WeatherForecast.egg-info/
+OpenWeatherForecast.egg-info/
 build/
 dist/
