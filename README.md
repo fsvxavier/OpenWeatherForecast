@@ -1,7 +1,7 @@
 # Weather forecast
 
 [![Build Status](https://travis-ci.org/enanablancaynumeros/OpenWeatherForecast.svg?branch=master)](https://travis-ci.org/enanablancaynumeros/OpenWeatherForecast)
-[![Coverage Status](https://coveralls.io/repos/enanablancaynumeros/weather_forecast/badge.svg)](https://coveralls.io/r/enanablancaynumeros/OpenWeatherForecast)
+[![Coverage Status](https://coveralls.io/repos/enanablancaynumeros/OpenWeatherForecast/badge.svg)](https://coveralls.io/r/enanablancaynumeros/OpenWeatherForecast)
 [![Latest Version](https://pypip.in/version/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
 [![Supported Python versions](https://pypip.in/py_versions/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
 [![Supported Python implementations](https://pypip.in/implementation/OpenWeatherForecast/badge.svg)](https://pypi.python.org/pypi/OpenWeatherForecast/)
@@ -47,5 +47,5 @@ See [Pypi](https://pypi.python.org/pypi/openweatherforecast/0.1.0) project page.
 
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/enanablancaynumeros/weather_forecast/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/enanablancaynumeros/openweatherforecast/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
