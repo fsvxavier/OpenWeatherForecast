@@ -2,3 +2,4 @@
 OpenWeatherForecast.egg-info/
 build/
 dist/
+*.pyc
