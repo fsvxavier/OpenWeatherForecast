@@ -12,27 +12,23 @@ def get_from_dict(data_dict, list_of_keys):
     return reduce(lambda d, k: d[k], list_of_keys, data_dict)
 
 
-def auto_tries(exception_to_catch, tries=4, delay=3, logger=None):
+def auto_tries(exception_to_catch, tries=4, delay=3):
     """
     Decorator to auto_tries the weather info
 
     :param tries:
     :param delay: Expressed in seconds, the waiting time between tries
-    :param logger:
     :return:
     """
     def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
-            internal_tries = tries
-            last_value = None
-            while internal_tries > 0:
+            for internal_tries in range(tries):
                 try:
-                    last_value = f(*args, **kwargs)
+                    return f(*args, **kwargs)
                 except exception_to_catch:
                     time.sleep(delay)
-                internal_tries -= 1
-            return last_value
+            return None
 
         return f_retry
 
