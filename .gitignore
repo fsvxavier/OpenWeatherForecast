@@ -3,4 +3,8 @@ OpenWeatherForecast.egg-info/
 build/
 dist/
 *.pyc
-.eggs/
+eggs/
+coverage*
+coveralls*
+docopt*
+nose*
