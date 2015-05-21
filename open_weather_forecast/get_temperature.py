@@ -9,7 +9,8 @@ FORECAST_URL = 'http://api.openweathermap.org/data/2.5/forecast/city?q=London,uk
 
 
 def get_from_dict(data_dict, list_of_keys):
-    return reduce(lambda d, k: d[k], list_of_keys, data_dict)
+    list_of_keys = [list_of_keys] if not isinstance(list_of_keys, list) else list_of_keys
+    return reduce(lambda d, k: d.get(k, {}), list_of_keys, data_dict)
 
 
 def set_a_dict(data_dict, list_of_keys, value):
@@ -24,6 +25,7 @@ def auto_tries(exception_to_catch, tries=4, delay=3):
     :param delay: Expressed in seconds, the waiting time between tries
     :return:
     """
+
     def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
@@ -48,15 +50,44 @@ def http_retrieve(url):
         return {}
 
 
-def get_temperature(url, given_keys):
-    today_temperature = http_retrieve(url)
-    dictionary = dict()
-    if not today_temperature:
-        return False, today_temperature
+def create_dictionary(temperatures_history, information_schema, dictionary=None):
+    if not dictionary:
+        dictionary = dict()
+
+    for key in information_schema:
+        if isinstance(temperatures_history, dict):
+            value = temperatures_history.get(key, {})
+        else:
+            import ipdb
+            ipdb.set_trace()
+            for element, sub_info in zip(temperatures_history, information_schema.get(key)):
+                create_dictionary(element, sub_info, dictionary)
+            return dictionary
+
+        if not isinstance(information_schema.get(key), type(value)):
+            msg = "Types from information schema and the information retrieved does not match"
+            raise ValueError(msg)
+
+        if isinstance(value, (list, dict)):
+            dictionary[key] = type(value)()
+            return create_dictionary(temperatures_history.get(key), information_schema, dictionary)
+        else:
+            if isinstance(dictionary[key], list):
+                dictionary[key].append(value)
+            else:
+                dictionary[key] = value
+        return dictionary
+
+
+def get_temperature(url, information_schema):
+    temperatures_history = http_retrieve(url)
+    if not temperatures_history:
+        return False, {}
     else:
-        for key_set in given_keys:
-            value = get_from_dict(today_temperature, key_set)
-            set_a_dict(dictionary, key_set, value)
+        try:
+            return True, create_dictionary(temperatures_history, information_schema)
+        except (ValueError, KeyError):
+            return False, {}
 
 
 def get_temperatures(url, given_keys):
