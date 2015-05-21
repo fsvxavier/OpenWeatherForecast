@@ -12,6 +12,10 @@ def get_from_dict(data_dict, list_of_keys):
     return reduce(lambda d, k: d[k], list_of_keys, data_dict)
 
 
+def set_a_dict(data_dict, list_of_keys, value):
+    get_from_dict(data_dict, list_of_keys[:-1])[list_of_keys[-1]] = value
+
+
 def auto_tries(exception_to_catch, tries=4, delay=3):
     """
     Decorator to auto_tries the weather info
@@ -46,12 +50,13 @@ def http_retrieve(url):
 
 def get_temperature(url, given_keys):
     today_temperature = http_retrieve(url)
+    dictionary = dict()
     if not today_temperature:
         return False, today_temperature
     else:
-        main_temperature = today_temperature.get("main")
-        for key in given_keys:
-            today_temperature[key] = today_temperature.get(key)
+        for key_set in given_keys:
+            value = get_from_dict(today_temperature, key_set)
+            set_a_dict(dictionary, key_set, value)
 
 
 def get_temperatures(url, given_keys):
