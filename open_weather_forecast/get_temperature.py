@@ -25,13 +25,14 @@ def retry(exception_to_catch, tries=4, delay=3, logger=None):
         @wraps(f)
         def f_retry(*args, **kwargs):
             internal_tries = tries
+            last_value = None
             while internal_tries > 1:
                 try:
-                    return f(*args, **kwargs)
+                    last_value = f(*args, **kwargs)
                 except exception_to_catch:
                     time.sleep(delay)
                     internal_tries -= 1
-            return f(*args, **kwargs)
+            return last_value
 
         return f_retry
 
