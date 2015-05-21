@@ -12,9 +12,9 @@ def get_from_dict(data_dict, list_of_keys):
     return reduce(lambda d, k: d[k], list_of_keys, data_dict)
 
 
-def retry(exception_to_catch, tries=4, delay=3, logger=None):
+def auto_tries(exception_to_catch, tries=4, delay=3, logger=None):
     """
-    Decorator to retry the weather info
+    Decorator to auto_tries the weather info
 
     :param tries:
     :param delay: Expressed in seconds, the waiting time between tries
@@ -26,12 +26,12 @@ def retry(exception_to_catch, tries=4, delay=3, logger=None):
         def f_retry(*args, **kwargs):
             internal_tries = tries
             last_value = None
-            while internal_tries > 1:
+            while internal_tries > 0:
                 try:
                     last_value = f(*args, **kwargs)
                 except exception_to_catch:
                     time.sleep(delay)
-                    internal_tries -= 1
+                internal_tries -= 1
             return last_value
 
         return f_retry
@@ -39,7 +39,7 @@ def retry(exception_to_catch, tries=4, delay=3, logger=None):
     return deco_retry
 
 
-@retry(RequestException, tries=4, delay=1)
+@auto_tries(RequestException, tries=4, delay=1)
 def http_retrieve(url):
     r = requests.get(url)
     if r.ok:
