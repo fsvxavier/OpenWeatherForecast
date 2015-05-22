@@ -21,3 +21,4 @@ WEATHER_INFORMATION_SCHEMA = {
         },
         ]
 }
+

@@ -1,4 +1,3 @@
-import json
 import requests
 from functools import wraps, reduce
 from requests.exceptions import RequestException
@@ -88,18 +87,3 @@ def get_temperature(url, information_schema):
             return True, create_dictionary(temperatures_history, information_schema)
         except (ValueError, KeyError):
             return False, {}
-
-
-def get_temperatures(url, given_keys):
-    r = requests.get(url)
-    dictionary = {}
-    if r.ok:
-        body_res = json.loads(r.text).get('list')
-        for day in body_res:
-            datetime = day.get('dt_txt')
-            dictionary[datetime] = {}
-            for key in given_keys:
-                dictionary[datetime][key] = day.get(key)
-        return True, dictionary
-    else:
-        return False, dictionary
