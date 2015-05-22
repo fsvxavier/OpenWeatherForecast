@@ -10,14 +10,5 @@ class GetTemperatureTest(unittest.TestCase):
         pass
 
     def basic_test(self):
-        information_schema = {
-            "list": [
-                {"main": [{"temp": int,
-                           "temp_min": int,
-                           "temp_max": int}
-                          ],
-                 "dt_txt": str
-                 },
-                ]
-        }
-        print(get_temperature(self.url, information_schema))
+        from open_weather_forecast.constants import WEATHER_INFORMATION_SCHEMA
+        print(get_temperature(self.url, WEATHER_INFORMATION_SCHEMA))

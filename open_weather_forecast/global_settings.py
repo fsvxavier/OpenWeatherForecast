@@ -1,8 +1,8 @@
 import os
 from datetime import datetime, timedelta
-
 import yaml
-from epic.sales_epicenter.constants import CFG_CACHE_TTL, CFG_FILE_PATH, CFG_FILE_PATH_ENV
+
+from open_weather_forecast.constants import CFG_CACHE_TTL, CFG_FILE_PATH, CFG_FILE_PATH_ENV
 
 
 class SettingCache():
@@ -41,10 +41,12 @@ def read_settings():
     """
     try:
         f_path = os.environ.get(CFG_FILE_PATH_ENV).strip()
-        return yaml.load(file(f_path, 'r'))
+        with open(f_path, 'r') as f:
+            return yaml.load(f)
     except AttributeError:
         try:
-            return yaml.load(file(CFG_FILE_PATH, 'r'))
+            with open(CFG_FILE_PATH, 'r') as f:
+                return yaml.load(f)
         except:
             msg = "Can't find settings in %s neither %s" % (CFG_FILE_PATH_ENV, CFG_FILE_PATH)
             raise Exception(msg)
