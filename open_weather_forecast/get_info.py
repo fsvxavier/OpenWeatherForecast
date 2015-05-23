@@ -1,13 +1,11 @@
-from abc import ABCMeta
-from functools import wraps
-import time
+import requests
+from requests import RequestException
+
+from open_weather_forecast.http_decorator import auto_tries
+from open_weather_forecast.get_info_abstract import GetInfoAbstract
 
 
-class GetInfo(metaclass=ABCMeta):
-    """
-    Abstract class to retrieve information from a Json API
-    """
-    pass
+class GetInfo(GetInfoAbstract):
 
     def filter_information(self, info_retrieved, schema, result=None):
         """
@@ -43,26 +41,24 @@ class GetInfo(metaclass=ABCMeta):
                     result[key] = value
         return result
 
-    @staticmethod
-    def auto_tries(exception_to_catch, tries=4, delay=3):
-        """
-        Decorator to auto_tries the weather info
+    @auto_tries(RequestException, tries=4, delay=1)
+    def http_retrieve(self, url):
+        r = requests.get(url)
+        if r.ok:
+            return r.json()
+        else:
+            return {}
 
-        :param tries:
-        :param delay: Expressed in seconds, the waiting time between tries
-        :return:
-        """
+    def get_info(self, url, information_schema):
+        temperatures_history = self.http_retrieve(url)
 
-        def deco_retry(f):
-            @wraps(f)
-            def f_retry(*args, **kwargs):
-                for internal_tries in range(tries):
-                    try:
-                        return f(*args, **kwargs)
-                    except exception_to_catch:
-                        time.sleep(delay)
-                return None
+        if not temperatures_history:
+            return False, {}
+        else:
+            try:
+                return True, self.filter_information(temperatures_history, information_schema)
+            except (ValueError, KeyError):
+                return False, {}
 
-            return f_retry
-
-        return deco_retry
+    def store_data(self):
+        raise NotImplementedError()
