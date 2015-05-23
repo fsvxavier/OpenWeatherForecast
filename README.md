@@ -20,11 +20,19 @@ pip install openweatherforecast
 
 #### Manual
 ```bash
-git clone git@github.com:enanablancaynumeros/weather_forecast.git
-cd 
+git clone git@github.com:enanablancaynumeros/OpenWeatherForecast.git
+cd OpenWeatherForecast
 python setup.py install
 # Make sure it works
 python setup.py test
+```
+
+#### Db configuration
+Change the folder in constants or use the one defined in "/etc/openweather/settings.yaml"
+```bash
+sudo mkdir /etc/openweather/
+sudo chmod 777 -R /etc/openweather/
+cp contrib/settings.yaml /etc/openweather/
 ```
 
 ### Code example

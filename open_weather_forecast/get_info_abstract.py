@@ -10,3 +10,11 @@ class GetInfoAbstract(metaclass=ABCMeta):
     def store_data(self):
         pass
 
+    @abstractmethod
+    def http_retrieve(self, url):
+        pass
+
+    @abstractmethod
+    def get_info(self, url, information_schema=None):
+        pass
+

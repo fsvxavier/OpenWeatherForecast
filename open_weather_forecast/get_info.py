@@ -49,14 +49,16 @@ class GetInfo(GetInfoAbstract):
         else:
             return {}
 
-    def get_info(self, url, information_schema):
+    def get_info(self, url, information_schema=None):
         temperatures_history = self.http_retrieve(url)
 
         if not temperatures_history:
             return False, {}
         else:
             try:
-                return True, self.filter_information(temperatures_history, information_schema)
+                if information_schema:
+                    temperatures_history = self.filter_information(temperatures_history, information_schema)
+                return True, temperatures_history
             except (ValueError, KeyError):
                 return False, {}
 
