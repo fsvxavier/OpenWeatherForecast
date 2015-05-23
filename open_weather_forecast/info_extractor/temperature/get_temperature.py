@@ -36,7 +36,8 @@ class GetTemperature(GetInfo):
     def load_data(self):
         self.get_db_connection()
         self.get_db_session()
-
+        import ipdb
+        ipdb.set_trace()
         return [x.serialize for x in self.session.query(WeatherInfo).all()]
 
 

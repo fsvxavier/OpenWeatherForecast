@@ -107,12 +107,5 @@ class GetInfo(GetInfoAbstract):
     def get_db_session(self):
         self.session = sessionmaker(bind=self.engine)()
 
-    def delete_databases(self):
-        table1 = self.base.metadata.tables.get("weatherinfo")
-        table2 = self.base.metadata.tables.get("temperature")
-        self.engine.execute(table1.delete())
-        self.engine.execute(table2.delete())
-
-        # TODO: delete tables with foreign keys later
-        # for table in self.base.metadata.sorted_tables:
-        #     self.engine.execute(table.delete())
+    def delete_tables(self):
+        self.base.metadata.drop_all()

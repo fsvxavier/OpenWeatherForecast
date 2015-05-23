@@ -18,7 +18,7 @@ class ForecastWeather(Base):
     __tablename__ = 'forecastweather'
     dt_txt = Column(DateTime, primary_key=True, autoincrement=False)
     temperature_id = Column(Integer, ForeignKey('temperature.id'))
-    temperature = relationship(Temperature)
+    temperature = relationship(Temperature, cascade="all, delete")
 
     @property
     def serialize(self):
