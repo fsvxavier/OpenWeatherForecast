@@ -15,7 +15,7 @@ OpenWeatherForecast is released under the [MIT license](https://github.com/enana
 ### Install 
 #### Pypi
 ```bash
-pip install openweatherforecast 
+pip install openweatherforecast
 ```
 
 #### Manual
@@ -38,6 +38,13 @@ cp contrib/settings.yaml /etc/openweather/
 ### Code example
 
 ```python
+from open_weather_forecast.get_temperature import GetTemperature
+from open_weather_forecast.constants import WEATHER_INFORMATION_SCHEMA
+
+url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format("London,uk")
+get_temp_manager = GetTemperature()
+info = get_temp_manager.http_retrieve(url=url)
+info_filtered_by_schema = get_temp_manager.filter_information(info, WEATHER_INFORMATION_SCHEMA)
 ```
 
 ### Run test

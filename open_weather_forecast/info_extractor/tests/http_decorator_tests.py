@@ -1,5 +1,6 @@
 import unittest
-from open_weather_forecast.http_decorator import auto_tries
+
+from open_weather_forecast.info_extractor.http_decorator import auto_tries
 
 
 class AutoTriesDecoratorTest(unittest.TestCase):

@@ -7,7 +7,7 @@ class GetInfoAbstract(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def store_data(self):
+    def store_data(self, data):
         pass
 
     @abstractmethod
@@ -16,5 +16,10 @@ class GetInfoAbstract(metaclass=ABCMeta):
 
     @abstractmethod
     def get_info(self, url, information_schema=None):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_db_connection():
         pass
 

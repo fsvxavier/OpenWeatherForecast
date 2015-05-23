@@ -1,12 +1,12 @@
 from unittest import mock, TestCase
 from unittest.mock import patch
 import json
-import requests
 from os import path
 
+import requests
 
 from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
-from open_weather_forecast.get_info import GetInfo
+from open_weather_forecast.info_extractor.get_info import GetInfo
 
 
 class FilterInformationTest(TestCase):

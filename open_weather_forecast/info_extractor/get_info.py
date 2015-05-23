@@ -1,8 +1,10 @@
 import requests
 from requests import RequestException
+from sqlalchemy import create_engine
 
-from open_weather_forecast.http_decorator import auto_tries
-from open_weather_forecast.get_info_abstract import GetInfoAbstract
+from open_weather_forecast.info_extractor.http_decorator import auto_tries
+from open_weather_forecast.info_extractor.get_info_abstract import GetInfoAbstract
+from open_weather_forecast.conf.global_settings import get_global_settings
 
 
 class GetInfo(GetInfoAbstract):
@@ -62,5 +64,25 @@ class GetInfo(GetInfoAbstract):
             except (ValueError, KeyError):
                 return True, {}
 
-    def store_data(self):
+    def store_data(self, data):
         raise NotImplementedError()
+
+    @staticmethod
+    def get_db_connection():
+        gs = get_global_settings()
+        password = gs["password"]
+        username = gs["username"]
+        host = gs["host"]
+        db_name = gs["db_name"]
+
+        db_url = 'postgresql+pg8000://{username}:{password}@{host}/{db_name}'.format(
+            username=username,
+            password=password,
+            host=host,
+            db_name=db_name
+        )
+
+        engine = create_engine(db_url)
+        engine.connect()
+
+        return engine
