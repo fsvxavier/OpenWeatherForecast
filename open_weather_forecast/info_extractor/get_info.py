@@ -1,6 +1,8 @@
 import requests
 from requests import RequestException
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from functools import wraps
 
 from open_weather_forecast.info_extractor.http_decorator import auto_tries
 from open_weather_forecast.info_extractor.get_info_abstract import GetInfoAbstract
@@ -9,13 +11,9 @@ from open_weather_forecast.conf.global_settings import get_global_settings
 
 class GetInfo(GetInfoAbstract):
 
-    def __init__(self):
-        self.engine = None
-        self.password = None
-        self.username = None
-        self.host = None
-        self.db_name = None
-        self.db_url = None
+    def __del__(self):
+        if hasattr(self, "session") and self.session:
+            self.session.close()
 
     def filter_information(self, info_retrieved, schema, result=None):
         """
@@ -76,10 +74,10 @@ class GetInfo(GetInfoAbstract):
         raise NotImplementedError()
 
     def get_db_connection(self):
-        gs = get_global_settings()
+        gs = get_global_settings().get("db")
         update = False
         for key in ["password", "username", "host", "db_name"]:
-            if gs.get(key) != getattr(self, key):
+            if gs.get(key) != getattr(self, key, None):
                 setattr(self, key, gs.get(key))
                 update = True
 
@@ -93,3 +91,18 @@ class GetInfo(GetInfoAbstract):
 
             self.engine = create_engine(self.db_url)
             self.engine.connect()
+            self.base.metadata.bind = self.engine
+            self.base.metadata.create_all(self.engine)
+
+    def get_db_session(self):
+        self.session = sessionmaker(bind=self.engine)()
+
+    def delete_databases(self):
+        table1 = self.base.metadata.tables.get("weatherinfo")
+        table2 = self.base.metadata.tables.get("temperature")
+        self.engine.execute(table1.delete())
+        self.engine.execute(table2.delete())
+
+        # TODO: delete tables with foreign keys later
+        # for table in self.base.metadata.sorted_tables:
+        #     self.engine.execute(table.delete())

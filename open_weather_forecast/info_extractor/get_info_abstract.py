@@ -22,3 +22,4 @@ class GetInfoAbstract(metaclass=ABCMeta):
     def get_db_connection(self):
         pass
 
+
