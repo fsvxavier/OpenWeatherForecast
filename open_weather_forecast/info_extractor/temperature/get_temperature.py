@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from open_weather_forecast.info_extractor.get_info import GetInfo
-from open_weather_forecast.weather_db.weather_info import Base, WeatherInfo, Temperature
+from open_weather_forecast.info_extractor.temperature.weather_info import Base, WeatherInfo, Temperature
+from open_weather_forecast.conf.constants import WEATHER_DATE_FORMAT
 
 
 class GetTemperature(GetInfo):
@@ -17,14 +18,6 @@ class GetTemperature(GetInfo):
         self.base = Base
         self.session = None
 
-    def download_store_new_data(self, url="", information_schema=None):
-        error, info_filtered_by_schema = self.get_info(url=url, information_schema=information_schema)
-        if not error:
-            self.store_data(info_filtered_by_schema.get("list"))
-        else:
-            msg = "An error occurred while downloading new data"
-            raise Exception(msg)
-
     def store_data(self, data):
         self.get_db_connection()
         self.get_db_session()
@@ -34,7 +27,7 @@ class GetTemperature(GetInfo):
                 # Create
                 new_temperature = Temperature(**point.get("main"))
                 self.session.add(new_temperature)
-                weather_pk = datetime.strptime(point.get("dt_txt"), "%Y-%m-%d %H:%M:%S")
+                weather_pk = datetime.strptime(point.get("dt_txt"), WEATHER_DATE_FORMAT)
                 new_weather_point = WeatherInfo(dt_txt=weather_pk, temperature=new_temperature)
                 self.session.add(new_weather_point)
 

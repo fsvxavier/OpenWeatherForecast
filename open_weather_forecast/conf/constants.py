@@ -13,6 +13,8 @@ CFG_FILE_PATH_EXAMPLE = "{}/contrib/settings.yaml".format(os.path.dirname(os.pat
 # Log format
 LOGGING_FORMATTER = "%(asctime)s[%(levelname)s][%(target)s]%(message)s"
 
+WEATHER_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 WEATHER_INFORMATION_SCHEMA = {
     "list": [{
                  "main": {"temp": float,
@@ -22,4 +24,16 @@ WEATHER_INFORMATION_SCHEMA = {
                  "dt_txt": str
              }]
 }
+
+FORECAST_WEATHER_INFORMATION_SCHEMA = {
+    "list": [{
+                 "main": {"temp": float,
+                          "temp_min": float,
+                          "temp_max": float
+                          },
+                 "dt_txt": str
+             }]
+}
+
+
 

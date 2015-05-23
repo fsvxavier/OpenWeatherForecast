@@ -2,7 +2,6 @@ import requests
 from requests import RequestException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from functools import wraps
 
 from open_weather_forecast.info_extractor.http_decorator import auto_tries
 from open_weather_forecast.info_extractor.get_info_abstract import GetInfoAbstract
@@ -13,7 +12,10 @@ class GetInfo(GetInfoAbstract):
 
     def __del__(self):
         if hasattr(self, "session") and self.session:
-            self.session.close()
+            try:
+                self.session.close()
+            except:
+                pass
 
     def filter_information(self, info_retrieved, schema, result=None):
         """
@@ -69,6 +71,14 @@ class GetInfo(GetInfoAbstract):
                 return False, temperatures_history
             except (ValueError, KeyError):
                 return True, {}
+
+    def download_store_new_data(self, url="", information_schema=None):
+        error, info_filtered_by_schema = self.get_info(url=url, information_schema=information_schema)
+        if not error:
+            self.store_data(info_filtered_by_schema.get("list"))
+        else:
+            msg = "An error occurred while downloading new data"
+            raise Exception(msg)
 
     def store_data(self, data):
         raise NotImplementedError()

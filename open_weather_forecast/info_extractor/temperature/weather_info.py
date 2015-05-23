@@ -1,6 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime
+from open_weather_forecast.conf.constants import WEATHER_DATE_FORMAT
 
 Base = declarative_base()
 
@@ -22,7 +23,7 @@ class WeatherInfo(Base):
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
-        return {self.dt_txt: {
+        return {self.dt_txt.strftime(WEATHER_DATE_FORMAT): {
             "temp_max": self.temperature.temp_max,
             "temp_min": self.temperature.temp_min,
             "temp": self.temperature.temp,

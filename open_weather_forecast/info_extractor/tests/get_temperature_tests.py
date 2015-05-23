@@ -1,8 +1,5 @@
 import unittest
 
-from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
-from open_weather_forecast.info_extractor.get_temperature import GetTemperature
-
 
 class GetTemperatureTest(unittest.TestCase):
     def setUp(self):
