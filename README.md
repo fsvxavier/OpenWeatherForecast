@@ -23,8 +23,16 @@ pip install openweatherforecast
 git clone git@github.com:enanablancaynumeros/OpenWeatherForecast.git
 cd OpenWeatherForecast
 python setup.py install
-# Make sure it works
+```
+
+### Run test
+```shell
 python setup.py test
+
+or 
+
+nosetest openweatherforecast
+
 ```
 
 #### Db configuration
@@ -63,16 +71,6 @@ forecast_manager = GetForecast()
 forecast_manager.download_store_new_data(url=forecast_url, information_schema=FORECAST_WEATHER_INFORMATION_SCHEMA)
 forecast_historic_data = forecast_manager.load_data()
 print(forecast_historic_data)
-```
-
-### Run test
-```shell
-python setup.py test
-
-or 
-
-nosetest openweatherforecast
-
 ```
 
 
