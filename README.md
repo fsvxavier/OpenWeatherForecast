@@ -35,17 +35,34 @@ sudo chmod 777 -R /etc/openweather/
 cp contrib/settings.yaml /etc/openweather/
 ```
 
-### Code example
+### Code example for weather data
 
 ```python
-from open_weather_forecast.info_extractor.get_temperature import GetTemperature
+from open_weather_forecast.info_extractor.temperature.get_temperature import GetTemperature
 from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
 
-url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format("London,uk")
+city = "London,uk"
+url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format(city)
 
 temperature_manager = GetTemperature()
 temperature_manager.download_store_new_data(url=url, information_schema=WEATHER_INFORMATION_SCHEMA)
-historic_data = temperature_manager.load_data()
+weather_historic_data = temperature_manager.load_data()
+print(weather_historic_data)
+```
+
+### Code example for forecast weather data
+
+```python
+from open_weather_forecast.info_extractor.forecast.get_forecast import GetForecast
+from open_weather_forecast.conf.constants import FORECAST_WEATHER_INFORMATION_SCHEMA
+
+city = "London,uk"
+forecast_url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format(city)
+
+forecast_manager = GetForecast()
+forecast_manager.download_store_new_data(url=forecast_url, information_schema=FORECAST_WEATHER_INFORMATION_SCHEMA)
+forecast_historic_data = forecast_manager.load_data()
+print(forecast_historic_data)
 ```
 
 ### Run test
