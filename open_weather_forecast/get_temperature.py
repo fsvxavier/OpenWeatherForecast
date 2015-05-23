@@ -10,3 +10,5 @@ class GetTemperature(GetInfo):
 
     def store_data(self):
         self.db = get_db_connection()
+        import ipdb
+        ipdb.set_trace()

@@ -1,12 +1,15 @@
-import unittest
+from unittest import mock, TestCase
+from unittest.mock import patch
 import json
+import requests
 from os import path
+
 
 from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
 from open_weather_forecast.get_info import GetInfo
 
 
-class FilterInformationTest(unittest.TestCase):
+class FilterInformationTest(TestCase):
     def setUp(self):
         current_directory = path.abspath(path.dirname(__file__))
         with open(path.join(current_directory, "fixtures/temperature_data.json")) as f:
@@ -15,10 +18,9 @@ class FilterInformationTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def basic_test(self):
-        # pass
+    def complex_test(self):
         results = GetInfo().filter_information(self.data, WEATHER_INFORMATION_SCHEMA)
-        assert results == dict(
+        self.assertEqual(results,  dict(
             list=[{'dt_txt': '2015-05-22 15:00:00', 'main': {'temp_max': 293.74, 'temp': 293.74, 'temp_min': 293.437}},
                   {'dt_txt': '2015-05-22 18:00:00', 'main': {'temp_max': 293.99, 'temp': 293.99, 'temp_min': 293.744}},
                   {'dt_txt': '2015-05-22 21:00:00', 'main': {'temp_max': 290.95, 'temp': 290.95, 'temp_min': 290.77}},
@@ -50,3 +52,43 @@ class FilterInformationTest(unittest.TestCase):
                    'main': {'temp_max': 292.971, 'temp': 292.971, 'temp_min': 292.971}},
                   {'dt_txt': '2015-05-24 21:00:00',
                    'main': {'temp_max': 290.712, 'temp': 290.712, 'temp_min': 290.712}}])
+                          )
+
+    def basic_test(self):
+        schema = {
+            "message": float
+        }
+
+        results = GetInfo().filter_information(self.data, schema)
+        self.assertEqual(results, {"message": 0.0139})
+
+    def dict_as_arg_test(self):
+        schema = {
+            "message": float
+        }
+        results = {}
+        GetInfo().filter_information(self.data, schema, results)
+        self.assertEqual(results, {"message": 0.0139})
+
+
+class HttpRetrieveTest(TestCase):
+
+    def ok_test(self):
+        answer = {"Blah": True}
+        mocked = mock.MagicMock()
+        mocked.ok = True
+        mocked.json = mock.MagicMock(return_value=answer)
+
+        with patch.object(requests, 'get', return_value=mocked) as mock_method:
+            error, res = GetInfo().http_retrieve(url="")
+            self.assertEqual(res, answer)
+            self.assertEqual(error, False)
+
+    def fail_test(self):
+        mocked = mock.MagicMock()
+        mocked.ok = False
+
+        with patch.object(requests, 'get', return_value=mocked) as mock_method:
+            error, res = GetInfo().http_retrieve(url="")
+            self.assertEqual(res, {})
+            self.assertEqual(error, True)

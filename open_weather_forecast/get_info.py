@@ -42,25 +42,25 @@ class GetInfo(GetInfoAbstract):
         return result
 
     @auto_tries(RequestException, tries=4, delay=1)
-    def http_retrieve(self, url):
-        r = requests.get(url)
+    def http_retrieve(self, url=""):
+        r = requests.get(url=url)
         if r.ok:
-            return r.json()
+            return False, r.json()
         else:
-            return {}
+            return True, {}
 
-    def get_info(self, url, information_schema=None):
-        temperatures_history = self.http_retrieve(url)
+    def get_info(self, url="", information_schema=None):
+        error, temperatures_history = self.http_retrieve(url)
 
-        if not temperatures_history:
-            return False, {}
+        if not temperatures_history or error:
+            return True, {}
         else:
             try:
                 if information_schema:
                     temperatures_history = self.filter_information(temperatures_history, information_schema)
-                return True, temperatures_history
+                return False, temperatures_history
             except (ValueError, KeyError):
-                return False, {}
+                return True, {}
 
     def store_data(self):
         raise NotImplementedError()
