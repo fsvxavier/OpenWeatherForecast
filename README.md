@@ -38,13 +38,14 @@ cp contrib/settings.yaml /etc/openweather/
 ### Code example
 
 ```python
-from open_weather_forecast.get_temperature import GetTemperature
-from open_weather_forecast.constants import WEATHER_INFORMATION_SCHEMA
+from open_weather_forecast.info_extractor.get_temperature import GetTemperature
+from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
 
 url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format("London,uk")
-get_temp_manager = GetTemperature()
-info = get_temp_manager.http_retrieve(url=url)
-info_filtered_by_schema = get_temp_manager.filter_information(info, WEATHER_INFORMATION_SCHEMA)
+
+temperature_manager = GetTemperature()
+temperature_manager.download_store_new_data(url=url, information_schema=WEATHER_INFORMATION_SCHEMA)
+historic_data = temperature_manager.load_data()
 ```
 
 ### Run test
