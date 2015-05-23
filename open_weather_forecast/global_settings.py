@@ -1,6 +1,6 @@
 import os
-from datetime import datetime, timedelta
 import yaml
+from datetime import datetime, timedelta
 
 from open_weather_forecast.constants import CFG_CACHE_TTL, CFG_FILE_PATH, CFG_FILE_PATH_ENV
 

@@ -10,15 +10,13 @@ CFG_FILE_PATH = "/etc/openweather/settings.yaml"
 # Log format
 LOGGING_FORMATTER = "%(asctime)s[%(levelname)s][%(target)s]%(message)s"
 
-
 WEATHER_INFORMATION_SCHEMA = {
-    "list": [
-        {"main": [{"temp": int,
-                   "temp_min": int,
-                   "temp_max": int}
-        ],
-         "dt_txt": str
-        },
-        ]
+    "list": [{
+                 "main": {"temp": float,
+                          "temp_min": float,
+                          "temp_max": float
+                          },
+                 "dt_txt": str
+             }]
 }
 

@@ -1,5 +1,6 @@
 import unittest
-from open_weather_forecast.get_temperature import get_temperature
+from open_weather_forecast.get_temperature import GetTemperature
+from open_weather_forecast.constants import WEATHER_INFORMATION_SCHEMA
 
 
 class GetTemperatureTest(unittest.TestCase):
@@ -10,5 +11,4 @@ class GetTemperatureTest(unittest.TestCase):
         pass
 
     def basic_test(self):
-        from open_weather_forecast.constants import WEATHER_INFORMATION_SCHEMA
-        print(get_temperature(self.url, WEATHER_INFORMATION_SCHEMA))
+        pass
