@@ -8,6 +8,6 @@ install:
     - travis_retry pip install -r requirements.txt
     - travis_retry python setup.py install
 script:
-    - coverage run --source=temperature_data setup.py test
+  - coverage run --source=open_weather_forecast setup.py test
 after_success:
-    - coveralls
+  - coveralls
