@@ -7,9 +7,8 @@ class GetTemperature(GetInfo):
         super(GetTemperature).__init__()
         self.db = None
 
-    def connect_db(self):
-        self.db = get_db_connection()
-
     def store_data(self, data):
-        pass
+        self.get_db_connection()
+        import ipdb
+        ipdb.set_trace()
 

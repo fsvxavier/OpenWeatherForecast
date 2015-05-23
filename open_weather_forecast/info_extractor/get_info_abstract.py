@@ -18,8 +18,7 @@ class GetInfoAbstract(metaclass=ABCMeta):
     def get_info(self, url, information_schema=None):
         pass
 
-    @staticmethod
     @abstractmethod
-    def get_db_connection():
+    def get_db_connection(self):
         pass
 

@@ -9,6 +9,14 @@ from open_weather_forecast.conf.global_settings import get_global_settings
 
 class GetInfo(GetInfoAbstract):
 
+    def __init__(self):
+        self.engine = None
+        self.password = None
+        self.username = None
+        self.host = None
+        self.db_name = None
+        self.db_url = None
+
     def filter_information(self, info_retrieved, schema, result=None):
         """
         :param info_retrieved: Info retrieved from the API
@@ -67,22 +75,21 @@ class GetInfo(GetInfoAbstract):
     def store_data(self, data):
         raise NotImplementedError()
 
-    @staticmethod
-    def get_db_connection():
+    def get_db_connection(self):
         gs = get_global_settings()
-        password = gs["password"]
-        username = gs["username"]
-        host = gs["host"]
-        db_name = gs["db_name"]
+        update = False
+        for key in ["password", "username", "host", "db_name"]:
+            if gs.get(key) != getattr(self, key):
+                setattr(self, key, gs.get(key))
+                update = True
 
-        db_url = 'postgresql+pg8000://{username}:{password}@{host}/{db_name}'.format(
-            username=username,
-            password=password,
-            host=host,
-            db_name=db_name
-        )
+        if update:
+            self.db_url = 'postgresql+pg8000://{username}:{password}@{host}/{db_name}'.format(
+                username=self.username,
+                password=self.password,
+                host=self.host,
+                db_name=self.db_name
+            )
 
-        engine = create_engine(db_url)
-        engine.connect()
-
-        return engine
+            self.engine = create_engine(self.db_url)
+            self.engine.connect()
