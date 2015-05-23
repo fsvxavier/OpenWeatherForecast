@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 import yaml
 
-from open_weather_forecast.conf.constants import CFG_CACHE_TTL, CFG_FILE_PATH, CFG_FILE_PATH_ENV
+from open_weather_forecast.conf.constants import CFG_CACHE_TTL, CFG_FILE_PATH, CFG_FILE_PATH_ENV, CFG_FILE_PATH_EXAMPLE
 
 
 class SettingCache():
@@ -47,9 +47,15 @@ def read_settings():
         try:
             with open(CFG_FILE_PATH, 'r') as f:
                 return yaml.load(f)
-        except:
-            msg = "Can't find settings in %s neither %s" % (CFG_FILE_PATH_ENV, CFG_FILE_PATH)
-            raise Exception(msg)
+        except FileNotFoundError:
+            try:
+                with open(CFG_FILE_PATH_EXAMPLE, 'r') as f:
+                    return yaml.load(f)
+            except:
+                msg = "Can't find settings in {} neither {} neither {}".format(CFG_FILE_PATH_ENV,
+                                                                               CFG_FILE_PATH,
+                                                                               CFG_FILE_PATH_EXAMPLE)
+                raise Exception(msg)
 
 SettingCache(read_settings)
 
