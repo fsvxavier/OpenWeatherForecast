@@ -1,9 +1,7 @@
 language: python
 python:
-    - "3.2"
     - "3.3"
     - "3.4"
-    - "pypy"
 install:
     - travis_retry pip install -r requirements.txt
     - travis_retry python setup.py install
