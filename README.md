@@ -55,6 +55,7 @@ url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format(city)
 temperature_manager = GetTemperature()
 temperature_manager.download_store_new_data(url=url, information_schema=WEATHER_INFORMATION_SCHEMA)
 weather_historic_data = temperature_manager.load_data()
+del temperature_manager
 print(weather_historic_data)
 ```
 
@@ -70,7 +71,28 @@ forecast_url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.forma
 forecast_manager = GetForecast()
 forecast_manager.download_store_new_data(url=forecast_url, information_schema=FORECAST_WEATHER_INFORMATION_SCHEMA)
 forecast_historic_data = forecast_manager.load_data()
+del forecast_manager    
 print(forecast_historic_data)
+```
+
+### Code example to represent the data
+```python
+import matplotlib.pyplot as plt
+from collections import defaultdict
+
+common_days = [x for x in weather_historic_data if x in forecast_historic_data.keys()]
+errors = defaultdict(list)
+measures = ["temp_min", "temp_max", "temp"]
+for measure in measures:
+    for day in common_days:
+        value = weather_historic_data.get(day).get(measure) - forecast_historic_data.get(day).get(measure)
+        errors[measure].append(value)
+    plt.plot(errors[measure], label=measure)
+
+plt.xlabel('days')
+plt.ylabel('Error')
+plt.legend()
+plt.show()
 ```
 
 
