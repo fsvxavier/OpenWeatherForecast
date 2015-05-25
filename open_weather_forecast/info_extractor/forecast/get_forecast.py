@@ -21,7 +21,7 @@ class GetForecast(GetInfo):
     def store_data(self, data):
         self.get_db_connection()
         self.get_db_session()
-        for point in data:
+        for point in data.get("list"):
             existing_weather = self.session.query(ForecastWeather).filter_by(dt_txt=point.get("dt_txt")).first()
             if not existing_weather:
                 # Create

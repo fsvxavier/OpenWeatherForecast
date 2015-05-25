@@ -18,18 +18,20 @@ class GetTemperature(GetInfo):
         self.base = Base
         self.session = None
 
+    def data_transformation(self, data):
+        data["dt_txt"] = datetime.fromtimestamp(data.get("dt", 0)).strftime(WEATHER_DATE_FORMAT)
+
     def store_data(self, data):
         self.get_db_connection()
         self.get_db_session()
-        for point in data:
-            existing_weather = self.session.query(WeatherInfo).filter_by(dt_txt=point.get("dt_txt")).first()
-            if not existing_weather:
-                # Create
-                new_temperature = Temperature(**point.get("main"))
-                self.session.add(new_temperature)
-                weather_pk = datetime.strptime(point.get("dt_txt"), WEATHER_DATE_FORMAT)
-                new_weather_point = WeatherInfo(dt_txt=weather_pk, temperature=new_temperature)
-                self.session.add(new_weather_point)
+        existing_weather = self.session.query(WeatherInfo).filter_by(dt_txt=data.get("dt_txt")).first()
+        if not existing_weather:
+            # Create
+            new_temperature = Temperature(**data.get("main"))
+            self.session.add(new_temperature)
+            weather_pk = datetime.strptime(data.get("dt_txt"), WEATHER_DATE_FORMAT)
+            new_weather_point = WeatherInfo(dt_txt=weather_pk, temperature=new_temperature)
+            self.session.add(new_weather_point)
 
         self.session.commit()
 

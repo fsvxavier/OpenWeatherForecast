@@ -5,7 +5,7 @@ from os import path
 
 import requests
 
-from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
+from open_weather_forecast.conf.constants import FORECAST_WEATHER_INFORMATION_SCHEMA
 from open_weather_forecast.info_extractor.get_info import GetInfo
 
 
@@ -19,7 +19,7 @@ class FilterInformationTest(TestCase):
         pass
 
     def complex_test(self):
-        results = GetInfo().filter_information(self.data, WEATHER_INFORMATION_SCHEMA)
+        results = GetInfo().filter_information(self.data, FORECAST_WEATHER_INFORMATION_SCHEMA)
         self.assertEqual(results,  dict(
             list=[{'dt_txt': '2015-05-22 15:00:00', 'main': {'temp_max': 293.74, 'temp': 293.74, 'temp_min': 293.437}},
                   {'dt_txt': '2015-05-22 18:00:00', 'main': {'temp_max': 293.99, 'temp': 293.99, 'temp_min': 293.744}},
@@ -80,15 +80,13 @@ class HttpRetrieveTest(TestCase):
         mocked.json = mock.MagicMock(return_value=answer)
 
         with patch.object(requests, 'get', return_value=mocked) as mock_method:
-            error, res = GetInfo().http_retrieve(url="")
+            res = GetInfo().http_retrieve(url="")
             self.assertEqual(res, answer)
-            self.assertEqual(error, False)
 
     def fail_test(self):
         mocked = mock.MagicMock()
         mocked.ok = False
 
         with patch.object(requests, 'get', return_value=mocked) as mock_method:
-            error, res = GetInfo().http_retrieve(url="")
-            self.assertEqual(res, {})
-            self.assertEqual(error, True)
+            res = GetInfo().http_retrieve(url="")
+            self.assertEqual(res, None)

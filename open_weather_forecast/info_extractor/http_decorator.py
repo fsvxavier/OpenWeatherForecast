@@ -18,6 +18,7 @@ def auto_tries(exception_to_catch, tries=4, delay=3):
                 try:
                     return f(*args, **kwargs)
                 except exception_to_catch:
+                    print("Retrying in {} seconds".format(delay))
                     time.sleep(delay)
             return None
 

@@ -10,6 +10,19 @@ from open_weather_forecast.conf.global_settings import get_global_settings
 
 class GetInfo(GetInfoAbstract):
 
+    @staticmethod
+    def equivalent_types(value, defined_type):
+        """
+        Specific cases where a cast is acceptable.
+        :param value:
+        :param defined_type:
+        :return:
+        """
+        if isinstance(value, int) and defined_type is float:
+            return True
+        else:
+            return False
+
     def filter_information(self, info_retrieved, schema, result=None):
         """
         :param info_retrieved: Info retrieved from the API
@@ -30,7 +43,9 @@ class GetInfo(GetInfoAbstract):
                 continue
 
             info_type = type(schema.get(key)) if isinstance(schema.get(key), (list, dict)) else schema.get(key)
-            if info_type is not type(value):
+            if not self.equivalent_types(value, schema.get(key)) and info_type is not type(value):
+                import ipdb
+                ipdb.set_trace()
                 msg = "Types from information schema and the information retrieved does not match {} {}"
                 raise ValueError(msg.format(type(schema.get(key)), type(value)))
 
@@ -44,34 +59,36 @@ class GetInfo(GetInfoAbstract):
                     result[key] = value
         return result
 
-    @auto_tries(RequestException, tries=4, delay=1)
+    @auto_tries(ValueError, tries=5, delay=1)
     def http_retrieve(self, url=""):
         r = requests.get(url=url)
-        if r.ok:
-            return False, r.json()
+        if r.ok and r.json():
+            return r.json()
         else:
-            return True, {}
+            # Request exception parent does not work
+            raise ValueError()
 
     def get_info(self, url="", information_schema=None):
-        error, temperatures_history = self.http_retrieve(url)
-
-        if not temperatures_history or error:
-            return True, {}
+        temperatures_history = self.http_retrieve(url)
+        if not temperatures_history:
+            return "Empty answer", temperatures_history
         else:
             try:
                 if information_schema:
                     temperatures_history = self.filter_information(temperatures_history, information_schema)
-                return False, temperatures_history
-            except (ValueError, KeyError):
-                return True, {}
+                return "", temperatures_history
+            except (ValueError, KeyError) as e:
+                return e.__str__(), temperatures_history
 
     def download_store_new_data(self, url="", information_schema=None):
         error, info_filtered_by_schema = self.get_info(url=url, information_schema=information_schema)
         if not error:
-            self.store_data(info_filtered_by_schema.get("list"))
+            if hasattr(self, "data_transformation"):
+                self.data_transformation(info_filtered_by_schema)
+            self.store_data(info_filtered_by_schema)
         else:
-            msg = "An error occurred while downloading new data"
-            raise Exception(msg)
+            msg = "An error occurred while downloading or filtering new data: {}"
+            raise Exception(msg.format(error))
 
     def store_data(self, data):
         raise NotImplementedError()

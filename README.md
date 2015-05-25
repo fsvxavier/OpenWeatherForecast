@@ -77,41 +77,92 @@ print(forecast_historic_data)
 
 ### Code example to represent the data
 ```python
+from open_weather_forecast.info_extractor.temperature.get_temperature import GetTemperature
+from open_weather_forecast.conf.constants import WEATHER_INFORMATION_SCHEMA
+
+city = "London,uk"
+url = 'http://api.openweathermap.org/data/2.5/weather?q={}'.format(city)
+
+temperature_manager = GetTemperature()
+temperature_manager.download_store_new_data(url=url, information_schema=WEATHER_INFORMATION_SCHEMA)
+weather_historic_data = temperature_manager.load_data()
+
+
+from open_weather_forecast.info_extractor.forecast.get_forecast import GetForecast
+from open_weather_forecast.conf.constants import FORECAST_WEATHER_INFORMATION_SCHEMA
+
+forecast_url = 'http://api.openweathermap.org/data/2.5/forecast/city?q={}'.format(city)
+
+forecast_manager = GetForecast()
+forecast_manager.download_store_new_data(url=forecast_url, information_schema=FORECAST_WEATHER_INFORMATION_SCHEMA)
+forecast_historic_data = forecast_manager.load_data()
+
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
+measures = ["temp_min", "temp_max", "temp"]
 
-plt.subplot(311)
+plt.subplot(221)
+plt.title("Weather measures")
+plt.xlabel('Time')
+plt.ylabel('Temperature in K')
+for measure in measures:
+    plt.plot([weather_historic_data[x].get(measure) for x in weather_historic_data], label=measure)
+
+plt.xticks(range(len(list(weather_historic_data.keys()))),
+    [x[5:] for x in list(weather_historic_data.keys())],
+    rotation="vertical",
+    fontsize=6)
+plt.legend(loc="upper right", prop={'size': 6})
+
+
+plt.subplot(222)
+plt.title("Forecast Weather")
+plt.xlabel('Time')
+plt.ylabel('Temperature in K')
+for measure in measures:
+    plt.plot([forecast_historic_data[x].get(measure) for x in forecast_historic_data], label=measure)
+
+plt.xticks(range(len(list(forecast_historic_data.keys()))),
+    [x[5:] for x in list(forecast_historic_data.keys())],
+    rotation="vertical",
+    fontsize=6)
+plt.legend(loc="upper right", prop={'size': 6})
+
+
+plt.subplot(223)
 plt.title("Error between forecasting and final measures")
 plt.xlabel('Time')
 plt.ylabel('Error')
 
 common_days = [x for x in weather_historic_data if x in forecast_historic_data.keys()]
 errors = defaultdict(list)
-measures = ["temp_min", "temp_max", "temp"]
+
 for measure in measures:
     for day in common_days:
         value = np.power((weather_historic_data.get(day).get(measure) - forecast_historic_data.get(day).get(measure)), 2)
         errors[measure].append(value)
     plt.plot(errors[measure], label=measure)
-# plt.xticks(range(len(common_days)), common_days, rotation="vertical", fontsize=8)
+plt.xticks(range(len(common_days)), [x[5:] for x in common_days], rotation="vertical", fontsize=6)
 plt.legend(loc="upper right", prop={'size': 6})
 
-plt.subplot(312)
+
+from datetime import datetime
+from open_weather_forecast.conf.constants import WEATHER_DATE_FORMAT
+
+times_measured = [datetime.strptime(x, WEATHER_DATE_FORMAT) for x in weather_historic_data]
+comparable_forecast = [x for x in forecast_historic_data if datetime.strptime(
+    x, WEATHER_DATE_FORMAT) > times_measured[0] and datetime.strptime(x, WEATHER_DATE_FORMAT) < times_measured[-1]]
+plt.subplot(224)
+plt.title("Estimation comparison")
 plt.xlabel('Time')
 plt.ylabel('Temperature in K')
-for measure in measures:
-    plt.plot([weather_historic_data[x].get(measure) for x in weather_historic_data], label=measure)
 
-# plt.xticks(range(len(list(weather_historic_data.keys()))), list(weather_historic_data.keys()), rotation="vertical", fontsize=8)
-plt.legend(loc="upper right", prop={'size': 6})
-
-plt.subplot(313)
-plt.xlabel('Time')
-plt.ylabel('Temperature in K')
-for measure in measures:
-    plt.plot([forecast_historic_data[x].get(measure) for x in forecast_historic_data], label=measure)
-# plt.xticks(range(len(list(forecast_historic_data.keys()))), list(forecast_historic_data.keys()), rotation="vertical", fontsize=8)
+plt.plot([weather_historic_data.get(day.strftime(WEATHER_DATE_FORMAT)) for day in comparable_forecast],
+         label="Measured", marker="*")
+plt.plot([forecast_historic_data.get(day.strftime(WEATHER_DATE_FORMAT)) for day in comparable_forecast],
+         label="Forecast", marker="o")
+plt.xticks(range(len(comparable_forecast)), [x[5:] for x in comparable_forecast], rotation="vertical", fontsize=6)
 plt.legend(loc="upper right", prop={'size': 6})
 
 plt.tight_layout()
