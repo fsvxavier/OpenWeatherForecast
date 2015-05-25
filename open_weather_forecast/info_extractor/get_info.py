@@ -10,13 +10,6 @@ from open_weather_forecast.conf.global_settings import get_global_settings
 
 class GetInfo(GetInfoAbstract):
 
-    def __del__(self):
-        if hasattr(self, "session") and self.session:
-            try:
-                self.session.close()
-            except:
-                pass
-
     def filter_information(self, info_retrieved, schema, result=None):
         """
         :param info_retrieved: Info retrieved from the API

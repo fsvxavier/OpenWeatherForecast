@@ -36,6 +36,8 @@ class GetForecast(GetInfo):
     def load_data(self):
         self.get_db_connection()
         self.get_db_session()
-        return {list(x.serialize.keys())[0]: x.serialize.get(list(x.serialize.keys())[0]) for x in self.session.query(ForecastWeather).all()}
+        res = {list(x.serialize.keys())[0]: x.serialize.get(list(x.serialize.keys())[0]) for x in self.session.query(ForecastWeather).all()}
+        self.session.close()
+        return res
 
 

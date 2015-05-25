@@ -36,6 +36,8 @@ class GetTemperature(GetInfo):
     def load_data(self):
         self.get_db_connection()
         self.get_db_session()
-        return {list(x.serialize.keys())[0]: x.serialize.get(list(x.serialize.keys())[0]) for x in self.session.query(WeatherInfo).all()}
+        res = {list(x.serialize.keys())[0]: x.serialize.get(list(x.serialize.keys())[0]) for x in self.session.query(WeatherInfo).all()}
+        self.session.close()
+        return res
 
 

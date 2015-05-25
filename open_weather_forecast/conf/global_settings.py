@@ -39,23 +39,22 @@ def get_global_settings(refresh=False):
 def read_settings():
     """ Read global configuration yaml file
     """
-    try:
-        f_path = os.environ.get(CFG_FILE_PATH_ENV).strip()
+    f_path = os.environ.get(CFG_FILE_PATH_ENV, "").strip()
+    if os.path.exists(f_path):
         with open(f_path, 'r') as f:
             return yaml.load(f)
-    except AttributeError:
-        try:
-            with open(CFG_FILE_PATH, 'r') as f:
-                return yaml.load(f)
-        except FileNotFoundError:
-            try:
-                with open(CFG_FILE_PATH_EXAMPLE, 'r') as f:
-                    return yaml.load(f)
-            except:
-                msg = "Can't find settings in {} neither {} neither {}".format(CFG_FILE_PATH_ENV,
-                                                                               CFG_FILE_PATH,
-                                                                               CFG_FILE_PATH_EXAMPLE)
-                raise Exception(msg)
+    elif os.path.exists(CFG_FILE_PATH):
+        with open(CFG_FILE_PATH, 'r') as f:
+            return yaml.load(f)
+    elif os.path.exists(CFG_FILE_PATH_EXAMPLE):
+        with open(CFG_FILE_PATH_EXAMPLE, 'r') as f:
+            return yaml.load(f)
+    else:
+        msg = "Can't find settings in {} neither {} neither {}".format(
+            CFG_FILE_PATH_ENV,
+            CFG_FILE_PATH,
+            CFG_FILE_PATH_EXAMPLE)
+        raise Exception(msg)
 
 SettingCache(read_settings)
 

@@ -78,20 +78,43 @@ print(forecast_historic_data)
 ### Code example to represent the data
 ```python
 import matplotlib.pyplot as plt
+import numpy as np
 from collections import defaultdict
+
+plt.subplot(311)
+plt.title("Error between forecasting and final measures")
+plt.xlabel('Time')
+plt.ylabel('Error')
 
 common_days = [x for x in weather_historic_data if x in forecast_historic_data.keys()]
 errors = defaultdict(list)
 measures = ["temp_min", "temp_max", "temp"]
 for measure in measures:
     for day in common_days:
-        value = weather_historic_data.get(day).get(measure) - forecast_historic_data.get(day).get(measure)
+        value = np.power((weather_historic_data.get(day).get(measure) - forecast_historic_data.get(day).get(measure)), 2)
         errors[measure].append(value)
     plt.plot(errors[measure], label=measure)
+# plt.xticks(range(len(common_days)), common_days, rotation="vertical", fontsize=8)
+plt.legend(loc="upper right", prop={'size': 6})
 
-plt.xlabel('days')
-plt.ylabel('Error')
-plt.legend()
+plt.subplot(312)
+plt.xlabel('Time')
+plt.ylabel('Temperature in K')
+for measure in measures:
+    plt.plot([weather_historic_data[x].get(measure) for x in weather_historic_data], label=measure)
+
+# plt.xticks(range(len(list(weather_historic_data.keys()))), list(weather_historic_data.keys()), rotation="vertical", fontsize=8)
+plt.legend(loc="upper right", prop={'size': 6})
+
+plt.subplot(313)
+plt.xlabel('Time')
+plt.ylabel('Temperature in K')
+for measure in measures:
+    plt.plot([forecast_historic_data[x].get(measure) for x in forecast_historic_data], label=measure)
+# plt.xticks(range(len(list(forecast_historic_data.keys()))), list(forecast_historic_data.keys()), rotation="vertical", fontsize=8)
+plt.legend(loc="upper right", prop={'size': 6})
+
+plt.tight_layout()
 plt.show()
 ```
 
